@@ -50,14 +50,14 @@ getArches() {
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
 				toupper($1) == "FROM" && $2 !~ /^('"$repo"'|scratch|.*\/.*)(:|$)/ {
-					print "'"$officialImagesUrl"'" $2
+					print "https://github.com/penn-state-dance-marathon/amazonlinux2-python/raw/main/library/amazonlinux2-python"
 				}
 			' '{}' + \
 			| sort -u \
 			| xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
 	) )"
 }
-getArches 'python'
+getArches 'amazonlinux2-python'
 
 cat <<-EOH
 # this file is generated via https://github.com/docker-library/python/blob/$(fileCommit "$self")/$self
@@ -77,74 +77,27 @@ join() {
 for version in "${versions[@]}"; do
 	rcVersion="${version%-rc}"
 
-	for v in \
-		{bullseye,buster}{,/slim} \
-		alpine{3.14,3.13} \
-		windows/windowsservercore-{ltsc2022,1809,ltsc2016} \
-	; do
-		dir="$version/$v"
-		variant="$(basename "$v")"
+    dir="$version"
 
-		if [ "$variant" = 'slim' ]; then
-			# convert "slim" into "slim-jessie"
-			# https://github.com/docker-library/ruby/pull/142#issuecomment-320012893
-			variant="$variant-$(basename "$(dirname "$v")")"
-		fi
+    [ -f "$dir/Dockerfile" ] || continue
 
-		[ -f "$dir/Dockerfile" ] || continue
+    commit="$(dirCommit "$dir")"
 
-		commit="$(dirCommit "$dir")"
+    fullVersion="$(git show "$commit":"$dir/Dockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
 
-		fullVersion="$(git show "$commit":"$dir/Dockerfile" | awk '$1 == "ENV" && $2 == "PYTHON_VERSION" { print $3; exit }')"
+    versionAliases=(
+        $fullVersion
+        $version
+        ${aliases[$version]:-}
+    )
 
-		versionAliases=(
-			$fullVersion
-			$version
-			${aliases[$version]:-}
-		)
+    variantAliases=( "${versionAliases[@]/%/-$variant}" )
+    debianSuite="${debianSuites[$version]:-$defaultDebianSuite}"
 
-		variantAliases=( "${versionAliases[@]/%/-$variant}" )
-		debianSuite="${debianSuites[$version]:-$defaultDebianSuite}"
-		case "$variant" in
-			*-"$debianSuite") # "slim-bullseye", etc need "slim"
-				variantAliases+=( "${versionAliases[@]/%/-${variant%-$debianSuite}}" )
-				;;
-			"alpine${defaultAlpineVersion}")
-				variantAliases+=( "${versionAliases[@]/%/-alpine}" )
-				;;
-		esac
-		variantAliases=( "${variantAliases[@]//latest-/}" )
-
-		case "$v" in
-			windows/*) variantArches='windows-amd64' ;;
-			*)
-				variantParent="$(awk 'toupper($1) == "FROM" { print $2 }' "$dir/Dockerfile")"
-				variantArches="${parentRepoToArches[$variantParent]}"
-				;;
-		esac
-
-		sharedTags=()
-		for windowsShared in windowsservercore nanoserver; do
-			if [[ "$variant" == "$windowsShared"* ]]; then
-				sharedTags=( "${versionAliases[@]/%/-$windowsShared}" )
-				sharedTags=( "${sharedTags[@]//latest-/}" )
-				break
-			fi
-		done
-		if [ "$variant" = "$debianSuite" ] || [[ "$variant" == 'windowsservercore'* ]]; then
-			sharedTags+=( "${versionAliases[@]}" )
-		fi
-
-		echo
-		echo "Tags: $(join ', ' "${variantAliases[@]}")"
-		if [ "${#sharedTags[@]}" -gt 0 ]; then
-			echo "SharedTags: $(join ', ' "${sharedTags[@]}")"
-		fi
-		cat <<-EOE
-			Architectures: $(join ', ' $variantArches)
-			GitCommit: $commit
-			Directory: $dir
-		EOE
-		[[ "$v" == windows/* ]] && echo "Constraints: $variant"
-	done
+    echo
+    echo "Tags: $(join ', ' "${variantAliases[@]}")"
+    if [ "${#sharedTags[@]}" -gt 0 ]; then
+        echo "SharedTags: $(join ', ' "${sharedTags[@]}")"
+    fi
+    [[ "$v" == windows/* ]] && echo "Constraints: $variant"
 done
