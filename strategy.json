@@ -3,31 +3,6 @@
   "matrix": {
     "include": [
       {
-        "name": "3.7.12",
-        "os": "amazonlinux:2",
-        "meta": {
-          "entries": [
-            {
-              "name": "3.7.12",
-              "tags": [
-                "penn-state-dance-marathon/amazonlinux2-python:3.7.12",
-                "penn-state-dance-marathon/amazonlinux2-python:3.7"
-              ],
-              "directory": "3.7",
-              "file": "Dockerfile",
-              "constraints": [],
-              "froms": [
-                "amazonlinux:2"
-              ]
-            }
-          ],
-          "froms": [
-            "amazonlinux:2"
-          ],
-          "dockerfiles": [
-            "3.7/Dockerfile"
-          ]
-        },
         "runs": {
           "build": "docker build --tag 'penn-state-dance-marathon/amazonlinux2-python:3.7.12' --tag 'penn-state-dance-marathon/amazonlinux2-python:3.7' '3.7.12'",
           "history": "docker history 'penn-state-dance-marathon/amazonlinux2-python:3.7.12",
