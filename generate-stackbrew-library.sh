@@ -45,7 +45,7 @@ dirCommit() {
 
 getArches() {
 	local repo="$1"; shift
-	local officialImagesUrl='https://github.com/penn-state-dance-marathon/amazonlinux2-python/raw/master/library'
+	local officialImagesUrl='https://github.com/penn-state-dance-marathon/amazonlinux2-python/raw/main/library/'
 
 	eval "declare -g -A parentRepoToArches=( $(
 		find -name 'Dockerfile' -exec awk '
