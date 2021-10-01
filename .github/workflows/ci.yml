@@ -11,7 +11,7 @@ jobs:
         include:
           - name: 3.7
             runs:
-              build: docker build --tag 'thontechnology/amazonlinux2-python:3.7.12' --tag 'thontechnology/amazonlinux2-python:3.7' '3.7.12'
+              build: docker build --tag 'thontechnology/amazonlinux2-python:3.7.12' --tag 'thontechnology/amazonlinux2-python:3.7' '3.7'
               history: docker history 'thontechnology/amazonlinux2-python:3.7.12'
               pull: docker pull 'amazonlinux:2'
               images: docker image ls --filter since=image-list-marker
