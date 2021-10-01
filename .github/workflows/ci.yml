@@ -19,8 +19,7 @@ jobs:
       - id: generate-jobs
         name: Generate Jobs
         run: |
-          git clone --depth 1 https://github.com/docker-library/bashbrew.git -b master ~/bashbrew
-          strategy="$(~/bashbrew/scripts/github-actions/generate.sh)"
+          strategy="$(cat strategy.json)"
           jq . <<<"$strategy" # sanity check / debugging aid
           echo "::set-output name=strategy::$strategy"
 
@@ -39,7 +38,5 @@ jobs:
         run: ${{ matrix.runs.build }}
       - name: History ${{ matrix.name }}
         run: ${{ matrix.runs.history }}
-      - name: Test ${{ matrix.name }}
-        run: ${{ matrix.runs.test }}
       - name: '"docker images"'
         run: ${{ matrix.runs.images }}
