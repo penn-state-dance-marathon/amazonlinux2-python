@@ -20,6 +20,7 @@ jobs:
             pull: docker pull 'penn-state-dance-marathon/amazonlinux2-python:3.7.12'
             images: docker image ls --filter since=image-list-marker
     name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Prepare Environment
