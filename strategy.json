@@ -3,9 +3,34 @@
   "matrix": {
     "include": [
       {
+        "name": "3.7.12",
+        "os": "amazonlinux:2",
+        "meta": {
+          "entries": [
+            {
+              "name": "3.7.12",
+              "tags": [
+                "penn-state-dance-marathon/amazonlinux2-python:3.7.12",
+                "penn-state-dance-marathon/amazonlinux2-python:3.7"
+              ],
+              "directory": "3.7",
+              "file": "Dockerfile",
+              "constraints": [],
+              "froms": [
+                "amazonlinux:2"
+              ]
+            }
+          ],
+          "froms": [
+            "amazonlinux:2"
+          ],
+          "dockerfiles": [
+            "3.7/Dockerfile"
+          ]
+        },
         "runs": {
           "build": "docker build --tag 'penn-state-dance-marathon/amazonlinux2-python:3.7.12' --tag 'penn-state-dance-marathon/amazonlinux2-python:3.7' '3.7.12'",
-          "history": "docker history 'penn-state-dance-marathon/amazonlinux2-python:3.7.12",
+          "history": "docker history 'penn-state-dance-marathon/amazonlinux2-python:3.7.12'",
           "prepare": "git clone --depth 1 https://github.com/docker-library/official-images.git -b master ~/oi\n# create a dummy empty image/layer so we can --filter since= later to get a meaningful image list\n{ echo FROM busybox:latest; echo RUN :; } | docker build --no-cache --tag image-list-marker -\n# PGP Happy Eyeballs\ngit clone --depth 1 https://github.com/tianon/pgp-happy-eyeballs.git ~/phe\n~/phe/hack-my-builds.sh\nrm -rf ~/phe",
           "pull": "docker pull 'penn-state-dance-marathon/amazonlinux2-python:3.7.12'",
           "images": "docker image ls --filter since=image-list-marker"
