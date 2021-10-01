@@ -14,19 +14,19 @@ jobs:
               build: docker build --tag 'thontechnology/amazonlinux2-python:3.7.12' --tag 'thontechnology/amazonlinux2-python:3.7' '3.7'
               history: docker history 'thontechnology/amazonlinux2-python:3.7.12'
               pull: docker pull 'amazonlinux:2'
-              images: docker image ls --filter since=image-list-marker
+              push: docker push 'thontechnology/amazonlinux2-python:3.7.12' && docker push 'thontechnology/amazonlinux2-python:3.7'
           - name: 3.8
             runs:
               build: docker build --tag 'thontechnology/amazonlinux2-python:3.8.12' --tag 'thontechnology/amazonlinux2-python:3.8' '3.8'
               history: docker history 'thontechnology/amazonlinux2-python:3.8.12'
               pull: docker pull 'amazonlinux:2'
-              images: docker image ls --filter since=image-list-marker
+              push: docker push 'thontechnology/amazonlinux2-python:3.8.12' && docker push 'thontechnology/amazonlinux2-python:3.8'
           - name: 3.9
             runs:
               build: docker build --tag 'thontechnology/amazonlinux2-python:3.9.7' --tag 'thontechnology/amazonlinux2-python:3.9' --tag 'thontechnology/amazonlinux2-python:3' --tag 'thontechnology/amazonlinux2-python:latest' '3.9'
               history: docker history 'thontechnology/amazonlinux2-python:3.9.7'
               pull: docker pull 'amazonlinux:2'
-              images: docker image ls --filter since=image-list-marker
+              push: docker push 'thontechnology/amazonlinux2-python:3.9.7' && docker push 'thontechnology/amazonlinux2-python:3.9' && docker push 'thontechnology/amazonlinux2-python:3' && docker push 'thontechnology/amazonlinux2-python:latest'
     name: ${{ matrix.name }}
     runs-on: ubuntu-latest
     steps:
@@ -40,11 +40,7 @@ jobs:
         run: ${{ matrix.runs.pull }}
       - name: Build ${{ matrix.name }}
         run: ${{ matrix.runs.build }}
+      - name: Push ${{ matrix.name }}
+        run: ${{ matrix.runs.push }}
       - name: History ${{ matrix.name }}
         run: ${{ matrix.runs.history }}
-      - name: '"docker images"'
-        run: ${{ matrix.runs.images }}
-      - name: Log out of DockerHub
-        uses: docker/login-action@v1
-        with:
-          logout: true
