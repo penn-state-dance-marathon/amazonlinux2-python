@@ -31,6 +31,12 @@ RUN yum install -y \
     epel-release \
     python3-pip \
 	cairo-devel \
+    pango \
+    gcc-c++ \
+    zlib-devel \
+    libjpeg-devel \
+    openjpeg2-devel \
+    libffi-devel \
     mysql-devel
 RUN ln -fs /usr/local/bin/python${PYTHON_VERSION_ONLYMAJOR} /usr/local/bin/python \
     && ln -fs /usr/local/bin/pip${PYTHON_VERSION_ONLYMAJOR} /usr/local/bin/pip
