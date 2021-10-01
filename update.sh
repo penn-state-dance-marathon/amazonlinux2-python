@@ -166,8 +166,10 @@ for version in "${versions[@]}"; do
 	major="${rcVersion%%.*}"
 	minor="${rcVersion#$major.}"
 	minor="${minor%%.*}"
+	amazonlinuxversion="2"
 
 	sed -ri \
+		-e 's/^(FROM amazonlinux:).*/\1'"$amazonlinuxversion"'/' \
 		-e 's/^(ARG PYTHON_VERSION=).*/\1'"$fullVersion"'/' \
 		-e 's/^(ARG PYTHON_VERSION_ONLYMAJOR=).*/\1'"${major}.${minor}"'/' \
 		"$dir/Dockerfile"
