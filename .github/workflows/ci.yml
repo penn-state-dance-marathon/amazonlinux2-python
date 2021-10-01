@@ -19,7 +19,7 @@ jobs:
       - id: generate-jobs
         name: Generate Jobs
         run: |
-          strategy="$(cat strategy.json)"
+          strategy=$(cat strategy.json)
           jq . <<<"$strategy" # sanity check / debugging aid
           echo "::set-output name=strategy::$strategy"
 
