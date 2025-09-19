@@ -6,7 +6,7 @@
 
 FROM amazonlinux:2
 
-ARG PYTHON_VERSION=3.8.12
+ARG PYTHON_VERSION=3.8.20
 ARG PYTHON_VERSION_ONLYMAJOR=3.8
 RUN yum -y update &&\
     yum install -y shadow-utils findutils gcc sqlite-devel zlib-devel \

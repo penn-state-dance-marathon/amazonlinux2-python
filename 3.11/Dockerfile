@@ -6,8 +6,8 @@
 
 FROM amazonlinux:2
 
-ARG PYTHON_VERSION=3.7.17
-ARG PYTHON_VERSION_ONLYMAJOR=3.7
+ARG PYTHON_VERSION=3.11.13
+ARG PYTHON_VERSION_ONLYMAJOR=3.11
 RUN yum -y update &&\
     yum install -y shadow-utils findutils gcc sqlite-devel zlib-devel \
                    bzip2-devel openssl-devel readline-devel libffi-devel tar gzip make && \

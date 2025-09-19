@@ -5,6 +5,7 @@ shopt -s nullglob
 # https://github.com/docker-library/python/issues/365
 # https://pypi.org/project/pip/#history
 declare -A pipVersions=(
+	[3.11]='24.0' # https://github.com/python/cpython/blob/3.11/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.10]='21.2' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.8]='21.2' # historical
@@ -13,6 +14,7 @@ declare -A pipVersions=(
 )
 # https://pypi.org/project/setuptools/#history
 declare -A setuptoolsVersions=(
+	[3.11]='79' # https://github.com/python/cpython/blob/3.11/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.10]='57' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.8]='57' # historical
@@ -168,10 +170,10 @@ for version in "${versions[@]}"; do
 	minor="${minor%%.*}"
 	amazonlinuxversion="2"
 
-	sed -ri \
-		-e 's/^(FROM amazonlinux:).*/\1'"$amazonlinuxversion"'/' \
-		-e 's/^(ARG PYTHON_VERSION=).*/\1'"$fullVersion"'/' \
-		-e 's/^(ARG PYTHON_VERSION_ONLYMAJOR=).*/\1'"${major}.${minor}"'/' \
+	sed -i '' \
+		-e 's/^FROM amazonlinux:.*/FROM amazonlinux:'"$amazonlinuxversion"'/' \
+		-e 's/^ARG PYTHON_VERSION=.*/ARG PYTHON_VERSION='"$fullVersion"'/' \
+		-e 's/^ARG PYTHON_VERSION_ONLYMAJOR=.*/ARG PYTHON_VERSION_ONLYMAJOR='"${major}.${minor}"'/' \
 		"$dir/Dockerfile"
 
 
@@ -184,12 +186,12 @@ for version in "${versions[@]}"; do
 	fi
 	if [ "$minor" -ge 9 ]; then
 		# "wininst-*.exe" is not installed for Unix platforms on Python 3.9+: https://github.com/python/cpython/pull/14511
-		sed -ri -e '/wininst/d' "$dir/Dockerfile"
+		sed -i '' -e '/wininst/d' "$dir/Dockerfile"
 	fi
 
 	# https://www.python.org/dev/peps/pep-0615/
 	# https://mail.python.org/archives/list/python-dev@python.org/thread/PYXET7BHSETUJHSLFREM5TDZZXDTDTLY/
 	if [ "$minor" -lt 9 ]; then
-		sed -ri -e '/tzdata/d' "$dir/Dockerfile"
+		sed -i '' -e '/tzdata/d' "$dir/Dockerfile"
 	fi
 done
