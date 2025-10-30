@@ -22,6 +22,8 @@ RUN yum -y update &&\
 
 ENV PYTHONUNBUFFERED 1
 RUN yum install -y \
+    openssl \
+    openssl-devel \
     python3-devel \
     openldap-devel \
     libxml2-devel \

@@ -6,7 +6,7 @@
 
 FROM amazonlinux:2
 
-ARG PYTHON_VERSION=3.9.23
+ARG PYTHON_VERSION=3.9.24
 ARG PYTHON_VERSION_ONLYMAJOR=3.9
 RUN yum -y update &&\
     yum install -y shadow-utils findutils gcc sqlite-devel zlib-devel \
@@ -22,6 +22,8 @@ RUN yum -y update &&\
 
 ENV PYTHONUNBUFFERED 1
 RUN yum install -y \
+    openssl \
+    openssl-devel \
     python3-devel \
     openldap-devel \
     libxml2-devel \
