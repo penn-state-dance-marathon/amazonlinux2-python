@@ -6,8 +6,8 @@
 
 FROM amazonlinux:2023
 
-ARG PYTHON_VERSION=3.10.19
-ARG PYTHON_VERSION_ONLYMAJOR=3.10
+ARG PYTHON_VERSION=3.12.12
+ARG PYTHON_VERSION_ONLYMAJOR=3.12
 
 # Install build dependencies (AL2023 uses dnf instead of yum)
 RUN dnf -y update && \
