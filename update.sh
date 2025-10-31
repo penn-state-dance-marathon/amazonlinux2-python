@@ -4,6 +4,8 @@ shopt -s nullglob
 
 # https://github.com/docker-library/python/issues/365
 # https://pypi.org/project/pip/#history
+
+# https://github.com/amazonlinux/amazon-linux-2023/issues/191
 declare -A pipVersions=(
 	[3.12]='25.0' # https://github.com/python/cpython/blob/3.12/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.11]='24.0' # https://github.com/python/cpython/blob/3.11/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
