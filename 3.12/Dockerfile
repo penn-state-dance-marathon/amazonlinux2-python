@@ -6,7 +6,7 @@
 
 FROM amazonlinux:2023
 
-ARG PYTHON_VERSION_ONLYMAJOR=3.11
+ARG PYTHON_VERSION_ONLYMAJOR=3.12
 
 RUN dnf -y update && \
     dnf install -y \

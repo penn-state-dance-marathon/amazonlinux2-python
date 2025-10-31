@@ -4,7 +4,10 @@ shopt -s nullglob
 
 # https://github.com/docker-library/python/issues/365
 # https://pypi.org/project/pip/#history
+
+# https://github.com/amazonlinux/amazon-linux-2023/issues/191
 declare -A pipVersions=(
+	[3.12]='25.0' # https://github.com/python/cpython/blob/3.12/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.11]='24.0' # https://github.com/python/cpython/blob/3.11/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.10]='21.2' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
 	[3.9]='21.2' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_PIP_VERSION"
@@ -14,6 +17,7 @@ declare -A pipVersions=(
 )
 # https://pypi.org/project/setuptools/#history
 declare -A setuptoolsVersions=(
+	[3.12]='79' # https://github.com/python/cpython/blob/3.12/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.11]='79' # https://github.com/python/cpython/blob/3.11/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.10]='57' # https://github.com/python/cpython/blob/3.10/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
 	[3.9]='57' # https://github.com/python/cpython/blob/3.9/Lib/ensurepip/__init__.py -- "_SETUPTOOLS_VERSION"
@@ -161,14 +165,21 @@ for version in "${versions[@]}"; do
 
 	[ -d "$dir" ] || continue
 
-	template="Dockerfile.template"
-
-	{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
-	
+	# Determine which template and Amazon Linux version to use
 	major="${rcVersion%%.*}"
 	minor="${rcVersion#$major.}"
 	minor="${minor%%.*}"
-	amazonlinuxversion="2"
+
+	# Python 3.10+ uses Amazon Linux 2023, older versions use Amazon Linux 2
+	if [ "$major" -eq 3 ] && [ "$minor" -ge 10 ]; then
+		template="Dockerfile.al2023.template"
+		amazonlinuxversion="2023"
+	else
+		template="Dockerfile.template"
+		amazonlinuxversion="2"
+	fi
+
+	{ generated_warning; cat "$template"; } > "$dir/Dockerfile"
 
 	sed -i '' \
 		-e 's/^FROM amazonlinux:.*/FROM amazonlinux:'"$amazonlinuxversion"'/' \
